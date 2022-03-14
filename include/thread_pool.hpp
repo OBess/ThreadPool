@@ -128,7 +128,7 @@ namespace ds::th
          * @brief Join all threads to end all tasks in queue
          * 
          */
-        void join()
+        void join() noexcept
         {
             for (auto &t : _pool)
             {
