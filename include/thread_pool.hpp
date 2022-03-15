@@ -59,7 +59,7 @@ namespace ds::th
             };
 
             template <class Func>
-            struct impl_type : impl_base
+            struct impl_type final : impl_base
             {
                 Func f;
 
@@ -67,6 +67,8 @@ namespace ds::th
                     : f(std::move(f))
                 {
                 }
+
+                virtual ~impl_type() = default;
 
                 void call() override { f(); }
             };
