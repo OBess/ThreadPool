@@ -58,17 +58,17 @@ int main()
 {
    ds::th::thread_pool<5> pool;
 
-   auto result2P3 = pool.submit(std::bind(taskWithArgs, 2, 3));
-   auto th1 = pool.submit(taskWithoutArgs);
-   auto th2 = pool.submit(taskWithoutArgs);
-   auto th3 = pool.submit(taskWithoutArgs);
-   auto th4 = pool.submit(taskWithoutArgs);
-   auto th5 = pool.submit(taskWithoutArgs);
+   auto result2P3 = pool.submit(taskWithArgs, 2, 3);
+   pool.push(taskWithoutArgs);
+   pool.push(taskWithoutArgs);
+   pool.push(taskWithoutArgs);
+   pool.push(taskWithoutArgs);
+   pool.push(taskWithoutArgs);
 
    HasTask ht;
-   auto th6 = pool.submit(std::bind(&HasTask::task, &ht));
+   auto th6 = pool.submit(&HasTask::task, &ht);
 
-   auto th7 = pool.submit(Functor{});
+   pool.push(Functor{});
    
    pool.wait();
 
