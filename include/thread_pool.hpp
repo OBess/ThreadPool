@@ -93,7 +93,9 @@ namespace ds::th
                 execute();
             }
 
-            while(_counter);
+            while (_counter)
+            {
+            }
         }
 
     private:
