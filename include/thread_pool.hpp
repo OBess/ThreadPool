@@ -73,10 +73,10 @@ namespace ds::th
         {
             using return_type = std::invoke_result_t<Func, Args...>;
             using p_task = std::packaged_task<return_type()>;
-            p_task task(std::move(std::bind(func, std::forward<Args>(args)...)));
+            p_task task(std::bind(func, std::forward<Args>(args)...));
 
             auto future = task.get_future();
-            _queue.push([f = std::make_shared<p_task>(std::move(task))]()
+            _queue.push([f = std::make_shared<p_task>(std::move(task))]
                         { (*f)(); });
 
             return future;
@@ -93,9 +93,7 @@ namespace ds::th
                 execute();
             }
 
-            while (_counter)
-            {
-            }
+            while (_counter);
         }
 
     private:
