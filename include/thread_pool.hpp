@@ -61,11 +61,11 @@ namespace ds::th
 
         /**
          * @brief Create a task and push it to queue
-         * 
-         * @tparam Func 
-         * @tparam Args 
-         * @param func 
-         * @param args 
+         *
+         * @tparam Func
+         * @tparam Args
+         * @param func
+         * @param args
          * @return std::future<std::invoke_result_t<Func, Args...>>
          */
         template <class Func, class... Args>
@@ -92,6 +92,8 @@ namespace ds::th
             {
                 execute();
             }
+
+            while(_counter);
         }
 
     private:
@@ -108,7 +110,9 @@ namespace ds::th
             FuncType task;
             if (_queue.try_pop(task))
             {
+                ++_counter;
                 task();
+                --_counter;
             }
             else
             {
@@ -119,6 +123,7 @@ namespace ds::th
         std::array<std::thread, pool_size> _pool;
         threadsafe_queue<FuncType> _queue;
         std::atomic_bool _run{true};
+        std::atomic_size_t _counter{0};
     };
 
 } // namespace th
