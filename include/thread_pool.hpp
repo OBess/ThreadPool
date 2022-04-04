@@ -38,7 +38,7 @@ namespace ds::th
 
         ~thread_pool()
         {
-            _run = false;
+            stop();
 
             for (auto &t : _pool)
             {
@@ -93,7 +93,13 @@ namespace ds::th
                 execute();
             }
 
-            while (_counter);
+            while (_counter)
+                ;
+        }
+
+        inline void stop() noexcept
+        {
+            _run = false;
         }
 
     private:
