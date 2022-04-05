@@ -11,7 +11,6 @@
 
 namespace ds::th
 {
-    template <size_t pool_size>
     class thread_pool final
     {
     public:
@@ -20,13 +19,14 @@ namespace ds::th
         NONCOPYABLE(thread_pool);
         NONMOVEABLE(thread_pool);
 
-        thread_pool()
+        thread_pool(size_t pool_size)
         {
             try
             {
-                for (auto &p : _pool)
+                _pool.reserve(pool_size);
+                for (size_t i = 0; i < pool_size; ++i)
                 {
-                    p = std::move(std::thread(&thread_pool::process, this));
+                    _pool.emplace_back(&thread_pool::process, this);
                 }
             }
             catch (...)
@@ -73,7 +73,7 @@ namespace ds::th
         {
             using return_type = std::invoke_result_t<Func, Args...>;
             using p_task = std::packaged_task<return_type()>;
-            p_task task(std::bind(func, std::forward<Args>(args)...));
+            p_task task(std::bind(std::move(func), std::forward<Args>(args)...));
 
             auto future = task.get_future();
             _queue.push([f = std::make_shared<p_task>(std::move(task))]
@@ -126,7 +126,7 @@ namespace ds::th
             }
         }
 
-        std::array<std::thread, pool_size> _pool;
+        std::vector<std::thread> _pool;
         threadsafe_queue<FuncType> _queue;
         std::atomic_bool _run{true};
         std::atomic_size_t _counter{0};

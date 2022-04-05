@@ -56,7 +56,7 @@ struct Functor final
 // -------------------------------------------------------------------------------------------------
 int main()
 {
-   ds::th::thread_pool<5> pool;
+   ds::th::thread_pool pool(5);
 
    auto result2P3 = pool.submit(taskWithArgs, 2, 3);
    pool.push(taskWithoutArgs);
