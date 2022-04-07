@@ -93,8 +93,9 @@ namespace ds::th
                 execute();
             }
 
-            while (_counter)
-                ;
+            while (_counter > 0)
+            {
+            }
         }
 
         inline void stop() noexcept
