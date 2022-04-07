@@ -93,7 +93,10 @@ namespace ds::th
                 execute();
             }
 
-            while (_counter > 0)
+            push([this]() mutable
+                 { _wait_flag = false; });
+
+            while (_counter > 0 || _wait_flag)
             {
             }
         }
@@ -130,6 +133,7 @@ namespace ds::th
         std::vector<std::thread> _pool;
         threadsafe_queue<FuncType> _queue;
         std::atomic_bool _run{true};
+        std::atomic_bool _wait_flag{true};
         std::atomic_size_t _counter{0};
     };
 
