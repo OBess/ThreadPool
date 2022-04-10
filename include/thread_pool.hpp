@@ -8,6 +8,7 @@
 
 #include <threads/threadsafe_queue.hpp>
 #include <removeable.hpp>
+#include <iostream>
 
 namespace ds::th
 {
@@ -56,6 +57,7 @@ namespace ds::th
          */
         void push(FuncType &&f)
         {
+            _counter.fetch_add(1);
             _queue.push(std::move(f));
         }
 
@@ -76,8 +78,8 @@ namespace ds::th
             p_task task(std::bind(std::move(func), std::forward<Args>(args)...));
 
             auto future = task.get_future();
-            _queue.push([f = std::make_shared<p_task>(std::move(task))]
-                        { (*f)(); });
+            push([f = std::make_shared<p_task>(std::move(task))]
+                 { (*f)(); });
 
             return future;
         }
@@ -93,10 +95,7 @@ namespace ds::th
                 execute();
             }
 
-            push([this]() mutable
-                 { _wait_flag = false; });
-
-            while (_counter > 0 || _wait_flag)
+            while (_counter > 0)
             {
             }
         }
@@ -120,9 +119,8 @@ namespace ds::th
             FuncType task;
             if (_queue.try_pop(task))
             {
-                ++_counter;
                 task();
-                --_counter;
+                _counter.fetch_sub(1);
             }
             else
             {
@@ -132,9 +130,8 @@ namespace ds::th
 
         std::vector<std::thread> _pool;
         threadsafe_queue<FuncType> _queue;
-        std::atomic_bool _run{true};
-        std::atomic_bool _wait_flag{true};
         std::atomic_size_t _counter{0};
+        std::atomic_bool _run{true};
     };
 
 } // namespace th
