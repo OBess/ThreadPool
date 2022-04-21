@@ -71,7 +71,7 @@ namespace ds::th
          * @return std::future<std::invoke_result_t<Func, Args...>>
          */
         template <class Func, class... Args>
-        std::future<std::invoke_result_t<Func, Args...>> submit(Func &&func, Args &&...args)
+        auto submit(Func &&func, Args &&...args)
         {
             using return_type = std::invoke_result_t<Func, Args...>;
             using p_task = std::packaged_task<return_type()>;
