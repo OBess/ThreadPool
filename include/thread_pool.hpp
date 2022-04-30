@@ -20,7 +20,7 @@ namespace ds::th
         NONCOPYABLE(thread_pool);
         NONMOVEABLE(thread_pool);
 
-        thread_pool(size_t pool_size)
+        thread_pool(const size_t pool_size)
         {
             try
             {
@@ -103,6 +103,19 @@ namespace ds::th
         inline void stop() noexcept
         {
             _run = false;
+        }
+
+        /**
+         * @brief Implement the Singleton template. The default pool size is one
+         * to call this function without an argument
+         *
+         * @param pool_size
+         * @return thread_pool&
+         */
+        static inline thread_pool &get(const size_t pool_size = 1)
+        {
+            static thread_pool instance(pool_size);
+            return instance;
         }
 
     private:
