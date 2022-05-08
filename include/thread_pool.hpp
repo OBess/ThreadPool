@@ -20,7 +20,7 @@ namespace ds::th
         NONCOPYABLE(thread_pool);
         NONMOVEABLE(thread_pool);
 
-        thread_pool(const size_t pool_size)
+        inline thread_pool(const size_t pool_size)
         {
             try
             {
@@ -37,7 +37,7 @@ namespace ds::th
             }
         }
 
-        ~thread_pool()
+        inline ~thread_pool()
         {
             stop();
 
@@ -55,7 +55,7 @@ namespace ds::th
          *
          * @param f
          */
-        void push(FuncType &&f)
+        inline void push(FuncType &&f)
         {
             _counter.fetch_add(1);
             _queue.push(std::move(f));
@@ -71,7 +71,7 @@ namespace ds::th
          * @return std::future<std::invoke_result_t<Func, Args...>>
          */
         template <class Func, class... Args>
-        auto submit(Func &&func, Args &&...args)
+        inline auto submit(Func &&func, Args &&...args)
         {
             using return_type = std::invoke_result_t<Func, Args...>;
             using p_task = std::packaged_task<return_type()>;
@@ -88,7 +88,7 @@ namespace ds::th
          * @brief Wait until the queue is empty
          *
          */
-        void wait()
+        inline void wait()
         {
             while (_queue.empty() == false)
             {
