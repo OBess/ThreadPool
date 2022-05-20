@@ -7,7 +7,7 @@
 #include <functional>
 
 #include <threads/threadsafe_queue.hpp>
-#include <rules.hpp>
+#include <common/rules.hpp>
 #include <iostream>
 
 namespace ds::th
