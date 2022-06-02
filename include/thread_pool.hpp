@@ -101,7 +101,7 @@ namespace ds::th
         }
 
         /**
-         * @brief Add more treads to pool
+         * @brief Add more threads to pool
          * 
          * @param amount 
          */
