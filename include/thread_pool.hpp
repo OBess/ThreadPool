@@ -100,6 +100,17 @@ namespace ds::th
             }
         }
 
+        /**
+         * @brief Add more treads to pool
+         * 
+         * @param amount 
+         */
+        inline void add_threads(uint16_t amount = 1)
+        {
+            while (amount--)
+                _pool.emplace_back(&thread_pool::process, this);
+        }
+
         inline void stop() noexcept
         {
             _run = false;
