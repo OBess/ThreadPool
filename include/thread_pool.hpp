@@ -74,14 +74,13 @@ namespace ds::th
         inline auto submit(Func &&func, Args &&...args)
         {
             using return_type = std::invoke_result_t<Func, Args...>;
-            using p_task = std::packaged_task<return_type()>;
-            p_task task(std::bind(std::move(func), std::forward<Args>(args)...));
 
-            auto future = task.get_future();
-            push([f = std::make_shared<p_task>(std::move(task))]
-                 { (*f)(); });
+            auto task = std::make_shared<std::packaged_task<return_type()>>(std::bind(std::move(func), std::forward<Args>(args)...));
 
-            return future;
+            push([task]
+                 { (*task)(); });
+
+            return task->get_future();
         }
 
         /**
@@ -102,8 +101,8 @@ namespace ds::th
 
         /**
          * @brief Add more threads to pool
-         * 
-         * @param amount 
+         *
+         * @param amount
          */
         inline void add_threads(uint16_t amount = 1)
         {

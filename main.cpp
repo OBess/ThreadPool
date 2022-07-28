@@ -70,9 +70,9 @@ int main()
 
    pool.push(Functor{});
    
-   pool.wait();
-
    std::cout << "2 + 3 = " << result2P3.get() << std::endl;
+
+   pool.wait();
 
    /* Do not write code */
    return EXIT_SUCCESS;
